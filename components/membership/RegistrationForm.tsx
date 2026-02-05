@@ -2,9 +2,9 @@
 'use client';
 
 import React from "react"
-
 import { useState } from 'react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -27,6 +27,7 @@ export interface MembershipData {
 }
 
 export default function RegistrationForm() {
+  const router = useRouter();
   const [formData, setFormData] = useState<MembershipData>({
     fullName: '',
     dateOfBirth: '',
@@ -62,11 +63,16 @@ export default function RegistrationForm() {
     e.preventDefault();
     if (validateForm()) {
       console.log('Form submitted with data:', formData);
-      alert('Registration form submitted successfully!');
-      // Here you can handle the form data:
-      // - Send it to an API
-      // - Navigate to next step
-      // - Store in state/database
+      
+      // Save form data to localStorage for use in next step
+      const formDataForStorage = {
+        ...formData,
+        profilePhoto: photoPreview // Store the preview URL
+      };
+      localStorage.setItem('registrationData', JSON.stringify(formDataForStorage));
+      
+      // Navigate to membership selection page
+      router.push('/membership');
     }
   };
 
@@ -319,10 +325,7 @@ export default function RegistrationForm() {
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="mt-16 border-t border-border bg-card py-6 text-center text-muted-foreground">
-        <p>© 2024 Akhila Bharatiya Brahmana Mahasangh. All rights reserved.</p>
-      </footer>
+
     </div>
   );
 }
